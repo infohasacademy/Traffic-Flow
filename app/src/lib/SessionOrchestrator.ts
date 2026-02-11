@@ -1,6 +1,7 @@
 import BehaviorSimulator from './BehaviorSimulator';
 import ReferrerManager from './ReferrerManager';
 import FingerprintRotator from './FingerprintRotator';
+import GA4MeasurementProtocol from './GA4MeasurementProtocol';
 
 /**
  * SessionOrchestrator - Manages the end-to-end traffic session
@@ -13,6 +14,8 @@ export interface SessionConfig {
   searchEngine: string;
   depth: number;
   deviceType: 'desktop' | 'mobile';
+    ga4Id?: string | null;
+    ga4Secret?: string | null;
 }
 
 export class SessionOrchestrator {
@@ -42,6 +45,22 @@ export class SessionOrchestrator {
       referrer,
       behavior: sessionProfile,
       gaParams: ReferrerManager.getGASourceMedium(this.config.searchEngine)
+
+          // Send GA4 event if configured
+          if (this.config.ga4Id && this.config.ga4Secret) {
+            try {
+                      const ga4 = new GA4MeasurementProtocol(this.config.ga4Id, this.config.ga4Secret);
+                      await ga4.sendEvent({
+                                  client_id: fingerprint,
+                                  page_location: this.config.targetUrl,
+                                  page_referrer: referrer,
+                                  engagement_time_msec: Math.floor(Math.random() * 60000) + 30000
+                                });
+                      console.log('GA4 event sent successfully');
+                    } catch (error) {
+                      console.error('Failed to send GA4 event:', error);
+                    }
+          }
     };
   }
 
@@ -75,3 +94,4 @@ export class SessionOrchestrator {
 }
 
 export default SessionOrchestrator;
+35
