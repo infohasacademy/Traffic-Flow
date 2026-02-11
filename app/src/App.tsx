@@ -492,6 +492,7 @@ Report generated on ${new Date().toLocaleString()}
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const countryCode = formData.get('country') as string;
+        const trafficPattern = (formData.get('trafficPattern') as string) || 'Linear';
 
     const newCampaign: Campaign = {
       id: editingCampaign ? editingCampaign.id : 'camp-' + Date.now(),
@@ -513,6 +514,7 @@ Report generated on ${new Date().toLocaleString()}
       conversionRate: parseInt(formData.get('conversionRate') as string) || 5,
       bounceRate: parseInt(formData.get('bounceRate') as string) || 40,
       dailyBudget: parseInt(formData.get('dailyBudget') as string) || 1000,
+            trafficPattern: trafficPattern,
       targetOS: (formData.get('targetOS') as string) || 'Random OS',
       primaryKeywords: (formData.get('primaryKeywords') as string).split('\n').filter(k => k.trim()),
       pasfKeywords: (formData.get('pasfKeywords') as string).split('\n').filter(k => k.trim())
