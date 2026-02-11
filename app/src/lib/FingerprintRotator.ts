@@ -52,9 +52,9 @@ export class FingerprintRotator {
   static generateFingerprint(type: 'desktop' | 'mobile' = 'desktop'): Fingerprint {
     const uaList = this.userAgents[type];
     const resList = this.resolutions[type];
-    
+
     const resolution = resList[Math.floor(Math.random() * resList.length)];
-    
+
     return {
       userAgent: uaList[Math.floor(Math.random() * uaList.length)],
       screen: {
@@ -62,27 +62,19 @@ export class FingerprintRotator {
         colorDepth: 24
       },
       hardware: {
-        cores: type === 'desktop' ? [4, 8, 12, 16][Math.floor(Math.random() * 4)] : [4, 8][Math.floor(Math.random() * 2)],
-        memory: type === 'desktop' ? [8, 16, 32][Math.floor(Math.random() * 3)] : [4, 6, 8][Math.floor(Math.random() * 3)]
+        cores: Math.random() > 0.5 ? 8 : 4,
+        memory: Math.random() > 0.5 ? 16 : 8
       },
-      platform: type === 'desktop' ? 'Win32' : 'Linux armv8l'
+      platform: type === 'desktop' ? 'Win32' : 'iPhone'
     };
   }
 
   /**
-   * Get randomized HTTP headers matching the fingerprint
+   * Instance method for easier usage in components
    */
-  static getHeaders(fp: Fingerprint) {
-    return {
-      'User-Agent': fp.userAgent,
-      'Accept-Language': 'en-US,en;q=0.9',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-      'Sec-Ch-Ua-Platform': fp.platform.includes('Win') ? 'Windows' : 'Android',
-      'Sec-Fetch-Dest': 'document',
-      'Sec-Fetch-Mode': 'navigate',
-      'Sec-Fetch-Site': 'same-origin',
-      'Upgrade-Insecure-Requests': '1'
-    };
+  getFingerprint(targetOS: string = 'Random OS'): Fingerprint {
+    const type = (targetOS === 'iOS' || targetOS === 'Android' || targetOS === 'Mobile') ? 'mobile' : 'desktop';
+    return FingerprintRotator.generateFingerprint(type);
   }
 }
 
