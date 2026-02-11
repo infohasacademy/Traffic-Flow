@@ -14,6 +14,7 @@ interface Campaign {
   urls: string[];
   targeting: { region: string; countryCode: string };
   ga4Id: string | null;
+    ga4ApiSecret?: string | null;
   stats: { hits: number };
   ecommerceMode?: boolean;
   useProxies?: boolean;
